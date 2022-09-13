@@ -1,3 +1,7 @@
+.App-background {
+  background-image: url(./assets/images/login_background.jpg);
+}
+
 .App {
   text-align: center;
 }
