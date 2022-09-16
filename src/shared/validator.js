@@ -4,6 +4,11 @@ export const isEmail = (email) => {
     return re.test(email);
 }
 
+export const isMalaysianNumber = (number) => {
+    const re = /^(\+?6?01)[02-46-9]-*[0-9]{7}$|^(\+?6?01)[1]-*[0-9]{8}$/;
+    return re.test(number);
+}
+
 export const isEmpty = (thing) => {
     let empty = false;
 
