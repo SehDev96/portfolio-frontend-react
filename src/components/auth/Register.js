@@ -118,7 +118,7 @@ function Register(props) {
         }
         break;
       case state:
-        if (inputField !== "unselected") {
+        if (inputField !== unselected) {
           setRegisterModel({
             ...registerModel,
             state: inputField,
@@ -139,7 +139,7 @@ function Register(props) {
         }
         break;
       case city:
-        if (inputField !== "unselected") {
+        if (inputField !== unselected) {
           setRegisterModel({
             ...registerModel,
             city: inputField,
