@@ -11,6 +11,7 @@ import { Alert } from "bootstrap";
 
 const email = "email";
 const password = "password";
+const username = "username";
 
 function Login(props) {
   const [loginModel, setLoginModel] = useState(new LoginModel());
@@ -22,12 +23,12 @@ function Login(props) {
 
   function inputChangeHandler(inputField, param) {
     switch (param) {
-      case email:
+      case username:
         if (inputField.length !== 0) {
           setEmailError(!isEmail(inputField));
           setLoginModel({
             ...loginModel,
-            email: inputField,
+            username: inputField,
           });
           if (isEmail(inputField)) {
             setAllowSubmit({
@@ -44,7 +45,7 @@ function Login(props) {
           setEmailError(false);
           setLoginModel({
             ...loginModel,
-            email: "",
+            username: "",
           });
           setAllowSubmit({
             ...allowSubmit,
@@ -80,9 +81,13 @@ function Login(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let apiResponse = new ApiResponse();
+    console.log("LoginModel: ",loginModel);
     apiResponse = await login(loginModel);
     if(apiResponse.status === StatusCodes.OK){
-      console.log(apiResponse);
+      console.log(apiResponse.data.access_token);
+      localStorage.setItem("access_token",apiResponse.data.access_token);
+      localStorage.setItem("refresh_token",apiResponse.data.refresh_token);
+      alert("Login Successful");
     } else if (apiResponse.status === StatusCodes.UNAUTHORIZED){
       alert("Login Failed: ", apiResponse.message);
     }
@@ -115,7 +120,7 @@ function Login(props) {
               type="email"
               className="form-control mt-1"
               placeholder="Enter email"
-              onChange={(e) => inputChangeHandler(e.target.value, email)}
+              onChange={(e) => inputChangeHandler(e.target.value, username)}
             />
             {emailError ? (
               <span className="error-text">Please enter a valid email</span>
