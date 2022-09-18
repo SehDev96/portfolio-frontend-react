@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import ApiResponse from "../../model/ApiResponseModel";
 import LoginModel from "../../model/LoginModel"
 import { isEmail } from "../../shared/validator";
+import { login } from "../../service/authservice";
 
 import "./Auth.css";
+import { StatusCodes } from "http-status-codes";
+import { Alert } from "bootstrap";
 
 const email = "email";
 const password = "password";
@@ -19,16 +23,23 @@ function Login(props) {
   function inputChangeHandler(inputField, param) {
     switch (param) {
       case email:
-        if (inputField.length !== 0 && isEmail(inputField)) {
+        if (inputField.length !== 0) {
           setEmailError(!isEmail(inputField));
           setLoginModel({
             ...loginModel,
             email: inputField,
           });
-          setAllowSubmit({
-            ...allowSubmit,
-            email: true,
-          });
+          if (isEmail(inputField)) {
+            setAllowSubmit({
+              ...allowSubmit,
+              email: true,
+            });
+          } else {
+            setAllowSubmit({
+              ...allowSubmit,
+              email: false,
+            });
+          }
         } else {
           setEmailError(false);
           setLoginModel({
@@ -63,6 +74,21 @@ function Login(props) {
         }
         break;
       default:
+    }
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    let apiResponse = new ApiResponse();
+    apiResponse = await login(loginModel);
+    if(apiResponse.status === StatusCodes.OK){
+      console.log(apiResponse);
+    } else if (apiResponse.status === StatusCodes.UNAUTHORIZED){
+      alert("Login Failed: ", apiResponse.message);
+    }
+     else {
+      console.log("Failed to login user");
+      alert("Server Error");
     }
   }
 
@@ -110,12 +136,13 @@ function Login(props) {
             <button 
             type="submit" className="btn btn-primary"
             disabled={!isButtonDisabled()}
+            onClick={handleSubmit}
             >
               Submit
             </button>
           </div>
           <p className="text-center mt-2">
-            Forgot <a href="#">password?</a>
+            Forgot password?
           </p>
         </div>
       </form>

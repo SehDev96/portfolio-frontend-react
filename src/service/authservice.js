@@ -4,10 +4,14 @@ import * as endpoint from "../constants/endpoints";
 
 export async function register(data) {
   console.log("FUNCTION: Register User Api Call");
+  let apiResponse = new ApiResponse();
   try {
     let res = await axios.post(endpoint.REGISTER_USER, data);
     console.log("Register Api Call: " + res.status);
-    return JSON.stringify(res);
+
+    apiResponse.data = res.data;
+    apiResponse.status = res.status;
+    return apiResponse;
   } catch (e) {
     console.log(e);
     return e.response;

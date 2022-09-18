@@ -7,6 +7,9 @@ import RegisterModel from "../../model/RegisterModel";
 import { checkUser, register, login } from "../../service/authservice";
 import ApiResponse from "../../model/ApiResponseModel";
 import { StatusCodes } from "http-status-codes";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import { getStates, getCities } from "malaysia-postcodes";
 
 const email = "email";
 const phone_number = "phone_number";
@@ -21,6 +24,13 @@ function Register(props) {
   const [registerModel, setRegisterModel] = useState(new RegisterModel());
   const [emailError, setEmailError] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [selectedState, setSelectedState] = useState("");
+  const [userExistsMessage, setUserExistsMessage] = useState("");
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const [allowSubmit, setAllowSubmit] = useState({
     fullname: false,
@@ -42,10 +52,17 @@ function Register(props) {
             ...registerModel,
             email: inputField,
           });
-          setAllowSubmit({
-            ...allowSubmit,
-            email: true,
-          });
+          if (isEmail(inputField)) {
+            setAllowSubmit({
+              ...allowSubmit,
+              email: true,
+            });
+          } else {
+            setAllowSubmit({
+              ...allowSubmit,
+              email: false,
+            });
+          }
         } else {
           setEmailError(false);
           setRegisterModel({
@@ -63,17 +80,26 @@ function Register(props) {
           setPhoneNumberError(!isMalaysianNumber(inputField));
           setRegisterModel({
             ...registerModel,
-            phoneNumber: inputField,
+            phone_number: inputField,
           });
-          setAllowSubmit({
-            ...allowSubmit,
-            phonenumber: true,
-          });
+          if (isMalaysianNumber(inputField)) {
+            console.log("Malaysian Number!");
+            setAllowSubmit({
+              ...allowSubmit,
+              phonenumber: true,
+            });
+          } else {
+            console.log("Not Malaysian Number!");
+            setAllowSubmit({
+              ...allowSubmit,
+              phonenumber: false,
+            });
+          }
         } else {
           setPhoneNumberError(false);
           setRegisterModel({
             ...registerModel,
-            phoneNumber: "",
+            phone_number: "",
           });
           setAllowSubmit({
             ...allowSubmit,
@@ -150,6 +176,7 @@ function Register(props) {
             ...registerModel,
             state: inputField,
           });
+          setSelectedState(inputField);
           setAllowSubmit({
             ...allowSubmit,
             state: true,
@@ -159,6 +186,7 @@ function Register(props) {
             ...registerModel,
             state: "",
           });
+          setSelectedState("");
           setAllowSubmit({
             ...allowSubmit,
             state: false,
@@ -202,39 +230,43 @@ function Register(props) {
     );
   }
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     let apiResponse = new ApiResponse();
     apiResponse = await checkUser(registerModel);
-    console.log('RegisterUser Function: ',apiResponse);
-  }
+    console.log("RegisterUser function: ", JSON.stringify(apiResponse));
+    console.log("Object: ", apiResponse);
 
-  async function registerMe(){
-    let apiResponse = new ApiResponse();
-    apiResponse = await checkUser(registerModel);
-    console.log('RegisterUser Function: ',apiResponse);
-  }
+    if(apiResponse.status === StatusCodes.OK){
+      if(!apiResponse.data.userexists){
+        // user does not exists --> register user
+        apiResponse = await register(registerModel);
+        if (apiResponse.status === StatusCodes.CREATED) {
+          handleShow();
+          console.log("Successfully created!");
+        } else {
+          // user registration failed
+          console.log("RESULT: User registration failed!");
+          alert("Failed to register");
+        }
+      } else {
+        // user exists --> handle display of message
+        setUserExistsMessage(apiResponse.data.field);
 
-  async function registerUser() {
-    let apiResponse = new ApiResponse();
-    apiResponse = await checkUser(registerModel);
-    console.log('RegisterUser function: ',JSON.stringify(apiResponse));
+      }
+    } else {
+      console.log("Failed to check user");
+      alert("Server Error: Failed to call api");
+    }
 
     if (apiResponse.status === StatusCodes.OK && !apiResponse.data.userexists) {
       // server response is ok and user does not exists --> register user
+      console.log("RegisterModel: ", JSON.stringify(registerModel));
       apiResponse = await register(registerModel);
-      console.log(apiResponse);
+      console.log("Register Api Response: ", apiResponse.status);
       if (apiResponse.status === StatusCodes.CREATED) {
-        apiResponse = await login(registerModel);
-        console.log(apiResponse);
-        if (apiResponse.status === StatusCodes.OK) {
-          // user login api call was successfull
-          // change the context state
-          console.log("RESULT: User has been logged in");
-        } else {
-          // user login api call failed
-          console.log("RESULT: User failed to log in");
-        }
+        handleShow();
+        console.log("Successfully created!");
       } else {
         // user registration failed
         console.log("RESULT: User registration failed!");
@@ -243,12 +275,29 @@ function Register(props) {
     } else {
       console.log("Check user failed");
     }
-  }
-
-
+  };
 
   return (
     <div className="Auth-form-container">
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header>
+          <Modal.Title>Registration Status</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Registration Successful! <br />
+          Please login to continue.
+        </Modal.Body>
+        <Modal.Footer>
+          <Link to="/login">
+            <Button variant="primary">Sign In</Button>
+          </Link>
+        </Modal.Footer>
+      </Modal>
       <form className="Auth-form">
         <div className="Auth-form-content">
           <h3 className="Auth-form-title">Sign In</h3>
@@ -275,6 +324,13 @@ function Register(props) {
               placeholder="e.g Jane Doe"
               onChange={(e) => inputChangeHandler(e.target.value, username)}
             />
+            {userExistsMessage===username ? (
+              <span className="error-text">
+                Username has been taken.
+              </span>
+            ) : (
+              ""
+            )}
           </div>
           <div className="form-group mt-3">
             <label>Email address</label>
@@ -284,6 +340,13 @@ function Register(props) {
               placeholder="Email Address"
               onChange={(e) => inputChangeHandler(e.target.value, email)}
             />
+            {userExistsMessage===email ? (
+              <span className="error-text">
+                This email has been registered.
+              </span>
+            ) : (
+              ""
+            )}
             {emailError ? (
               <span className="error-text">Please enter a valid email</span>
             ) : (
@@ -322,21 +385,22 @@ function Register(props) {
               onChange={(e) => inputChangeHandler(e.target.value, state)}
             >
               <option value="unselected">Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              {getStates().map((state) => (
+                <option key={state} value={state}>{state}</option>
+              ))}
             </Form.Select>
           </div>
           <div className="form-group mt-3">
             <label>City</label>
             <Form.Select
               aria-label="Default select example"
+              disabled={selectedState === "" ? true : false}
               onChange={(e) => inputChangeHandler(e.target.value, city)}
             >
-              <option value="unselected">Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+            <option key={unselected} value={unselected}>Choose city...</option>
+              {getCities(selectedState).map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
             </Form.Select>
           </div>
           <div className="d-grid gap-2 mt-3">
@@ -349,9 +413,7 @@ function Register(props) {
               Submit
             </button>
           </div>
-          <p className="text-center mt-2">
-            Forgot password?
-          </p>
+          <p className="text-center mt-2">Forgot password?</p>
         </div>
       </form>
     </div>
