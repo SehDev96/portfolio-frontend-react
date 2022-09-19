@@ -48,18 +48,12 @@ export async function login(user) {
       apiResponse.status = res.status;
       apiResponse.data = res.data;
       console.log(apiResponse.data.has_tokens);
-      // await console.log('-----------');
-      // await console.log(res);
-      //return JSON.stringify(res);
     } catch (e) {
       await console.log('TEST');
       console.log(e);
       apiResponse.status = e.response.status;
       apiResponse.data = e.response.data;
       apiResponse.message = e.response.message;
-      // console.log(e.request._response);
-      //return e.request._response;
-      // throw handler(e);
     }
   
     console.log('APIRESPONSE: '+apiResponse);
