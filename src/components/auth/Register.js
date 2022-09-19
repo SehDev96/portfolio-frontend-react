@@ -111,7 +111,7 @@ function Register(props) {
         if (inputField.length !== 0) {
           setRegisterModel({
             ...registerModel,
-            fullName: inputField,
+            name: inputField,
           });
           setAllowSubmit({
             ...allowSubmit,
@@ -120,7 +120,7 @@ function Register(props) {
         } else {
           setRegisterModel({
             ...registerModel,
-            fullName: "",
+            name: "",
           });
           setAllowSubmit({
             ...allowSubmit,
@@ -233,6 +233,8 @@ function Register(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let apiResponse = new ApiResponse();
+    console.log(registerModel);
+    
     apiResponse = await checkUser(registerModel);
     console.log("RegisterUser function: ", JSON.stringify(apiResponse));
     console.log("Object: ", apiResponse);

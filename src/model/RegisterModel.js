@@ -1,6 +1,6 @@
 export default class RegisterModel {
-    constructor (fullName,username, email, password, phone_number,state, city) {
-        this.fullName = fullName === undefined ? '' : fullName;
+    constructor (name,username, email, password, phone_number,state, city) {
+        this.name = name === undefined ? '' : name;
         this.username = username === undefined ? '' : username;
         this.email = email === undefined ? '' : email;
         this.password = password === undefined ? '' : password;

@@ -76,7 +76,7 @@ function Home(props) {
               type="text"
               className="form-control mt-1"
               placeholder="e.g 01234556778"
-              value={appUserInfo.name}
+              value={appUserInfo.fullName}
             />
           </div>
           <div className="form-group mt-3">
