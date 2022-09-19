@@ -53,9 +53,10 @@ export async function login(user) {
       //return JSON.stringify(res);
     } catch (e) {
       await console.log('TEST');
+      console.log(e);
       apiResponse.status = e.response.status;
-      apiResponse.data = JSON.parse(e.request._response);
-      apiResponse.message = JSON.parse(e.request._response).message;
+      apiResponse.data = e.response.data;
+      apiResponse.message = e.response.message;
       // console.log(e.request._response);
       //return e.request._response;
       // throw handler(e);

@@ -258,23 +258,6 @@ function Register(props) {
       console.log("Failed to check user");
       alert("Server Error: Failed to call api");
     }
-
-    if (apiResponse.status === StatusCodes.OK && !apiResponse.data.userexists) {
-      // server response is ok and user does not exists --> register user
-      console.log("RegisterModel: ", JSON.stringify(registerModel));
-      apiResponse = await register(registerModel);
-      console.log("Register Api Response: ", apiResponse.status);
-      if (apiResponse.status === StatusCodes.CREATED) {
-        handleShow();
-        console.log("Successfully created!");
-      } else {
-        // user registration failed
-        console.log("RESULT: User registration failed!");
-        alert("Failed to register");
-      }
-    } else {
-      console.log("Check user failed");
-    }
   };
 
   return (
