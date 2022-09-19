@@ -6,11 +6,11 @@ import authaxiosinstance from "../../axios/authaxiosinstance";
 import * as endpoint from "../../constants/endpoints";
 import "./home.css";
 import { StatusCodes } from "http-status-codes";
-import AppUserInfoModel from "../../model/AppUserInfoModel";
+import AppUserInfoCombinedModel from "../../model/AppUserInfoModel";
 
 function Home(props) {
   const navigate = useNavigate();
-  const [appUserInfo, setAppUserInfo] = useState(new AppUserInfoModel());
+  const [appUserInfo, setAppUserInfo] = useState(new AppUserInfoCombinedModel());
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -43,8 +43,9 @@ function Home(props) {
       console.log("Data: ", res.data);
       setAppUserInfo({
         ...appUserInfo,
-        user_info_id: res.data.user_info_id,
-        user_id: res.data.user_id,
+        fullName: res.data.name,
+        username: res.data.username,
+        email: res.data.email,
         phone_number: res.data.phone_number,
         state: res.data.state,
         city: res.data.city,
@@ -75,7 +76,7 @@ function Home(props) {
               type="text"
               className="form-control mt-1"
               placeholder="e.g 01234556778"
-              value={appUserInfo.phone_number}
+              value={appUserInfo.name}
             />
           </div>
           <div className="form-group mt-3">
@@ -85,7 +86,7 @@ function Home(props) {
               type="text"
               className="form-control mt-1"
               placeholder="e.g 01234556778"
-              value={appUserInfo.phone_number}
+              value={appUserInfo.username}
             />
           </div>
           <div className="form-group mt-3">
@@ -95,7 +96,7 @@ function Home(props) {
               type="text"
               className="form-control mt-1"
               placeholder="e.g 01234556778"
-              value={appUserInfo.phone_number}
+              value={appUserInfo.email}
             />
           </div>
           <div className="form-group mt-3">
