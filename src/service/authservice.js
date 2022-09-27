@@ -40,6 +40,7 @@ export async function checkUser(user) {
 export async function login(user) {
     let apiResponse = new ApiResponse();
     console.log('FUNCTION: Login Api Call');
+    console.log("Endpoint: ",endpoint.LOGIN);
     try {
       let res = await axios.post(endpoint.LOGIN, {
         username: user.username,

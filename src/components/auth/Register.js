@@ -4,7 +4,7 @@ import "./Auth.css";
 import { isEmail, isMalaysianNumber } from "../../shared/validator";
 import Form from "react-bootstrap/Form";
 import RegisterModel from "../../model/RegisterModel";
-import { checkUser, register, login } from "../../service/authservice";
+import { checkUser, register } from "../../service/authservice";
 import ApiResponse from "../../model/ApiResponseModel";
 import { StatusCodes } from "http-status-codes";
 import Button from "react-bootstrap/Button";
