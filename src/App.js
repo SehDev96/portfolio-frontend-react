@@ -3,8 +3,6 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  useRoutes,
-  Switch,
 } from "react-router-dom";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
@@ -24,10 +22,10 @@ function App() {
   );
 }
 
-const HomeRoute = () =>
-  useRoutes([
-    { path: "/", element: <Login /> },
-    { path: "/auth", element: <Login /> },
-  ]);
+// const HomeRoute = () =>
+//   useRoutes([
+//     { path: "/", element: <Login /> },
+//     { path: "/auth", element: <Login /> },
+//   ]);
 
 export default App;

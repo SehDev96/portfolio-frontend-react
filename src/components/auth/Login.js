@@ -7,9 +7,8 @@ import { login } from "../../service/authservice";
 
 import "./Auth.css";
 import { StatusCodes } from "http-status-codes";
-import { Alert } from "bootstrap";
 
-const email = "email";
+//const email = "email";
 const password = "password";
 const username = "username";
 

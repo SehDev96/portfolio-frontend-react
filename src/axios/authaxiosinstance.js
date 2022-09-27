@@ -41,10 +41,20 @@ authAxiosInstance.interceptors.response.use(
   }
 );
 
-export default {
+const axiosMethods = {
   get: authAxiosInstance.get,
   post: authAxiosInstance.post,
   put: authAxiosInstance.put,
   delete: authAxiosInstance.delete,
   patch: authAxiosInstance.patch,
-};
+}
+
+export default axiosMethods;
+
+// export default {
+//   get: authAxiosInstance.get,
+//   post: authAxiosInstance.post,
+//   put: authAxiosInstance.put,
+//   delete: authAxiosInstance.delete,
+//   patch: authAxiosInstance.patch,
+// };
