@@ -152,7 +152,9 @@ function Login(props) {
               Submit
             </button>
           </div>
-          <p className="text-center mt-2">Forgot password?</p>
+          <p className="text-center mt-2">
+              <Link to="/forgotpassword" >Forgot Password?</Link>
+          </p>
         </div>
       </form>
     </div>

@@ -37,6 +37,62 @@ export async function checkUser(user) {
   }
 }
 
+export async function forgotPassword(email) {
+  console.log("FUNCTION: Forgot Password Api Call");
+  let apiResponse = new ApiResponse();
+  try {
+    await console.log(email);
+    let res = await axios.post(endpoint.FORGOT_PASSWORD, email);
+    console.log("ForgotPassword Response: ",res);
+
+    apiResponse.data = res.data;
+    apiResponse.status = res.status;
+    return apiResponse;
+  } catch (e) {
+    return e.response;
+    //throw handler(e);
+  }
+}
+
+export async function resetTokenAuthentication(token){
+  console.log("FUNCTION: Reset Token Authn Api Call");
+  let apiResponse = new ApiResponse();
+  try {
+    let res = await axios.get(endpoint.RESET_TOKEN_AUTHENTICATION, {
+      params: {
+        token: token
+      }
+    });
+    console.log("ResetToken Response: ",res);
+
+    apiResponse.data = res.data;
+    apiResponse.status = res.status;
+    return apiResponse;
+  } catch (e) {
+    return e.response;
+    //throw handler(e);
+  }
+}
+
+export async function resetPassword(apiModel) {
+  console.log("FUNCTION: Forgot Password Api Call");
+  let apiResponse = new ApiResponse();
+  try {
+    let res = await axios.post(endpoint.RESET_PASSWORD, {
+      token: apiModel.token, 
+      key: apiModel.key,
+    });
+    console.log("Reset Response: ",res);
+
+    apiResponse.data = res.data;
+    apiResponse.status = res.status;
+    return apiResponse;
+  } catch (e) {
+    return e.response;
+    //throw handler(e);
+  }
+}
+
 export async function login(user) {
     let apiResponse = new ApiResponse();
     console.log('FUNCTION: Login Api Call');
