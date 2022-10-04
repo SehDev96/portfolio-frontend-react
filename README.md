@@ -7,6 +7,6 @@
 
 ### References 
 
-- https://github.com/time-to-program/password-validation-reactjs
+- https://timetoprogram.com/password-and-confirm-password-validation-react/
 
 
